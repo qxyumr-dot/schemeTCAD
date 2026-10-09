@@ -1,0 +1,2307 @@
+{
+  "format": "sde-function-catalog",
+  "schema_version": 1,
+  "encoding": "UTF-8",
+  "categories": [
+    {
+      "id": "init",
+      "label": "初始化操作类",
+      "order": 1
+    },
+    {
+      "id": "geometry",
+      "label": "图形生成类",
+      "order": 2
+    },
+    {
+      "id": "contact",
+      "label": "Contact 类",
+      "order": 3
+    },
+    {
+      "id": "mesh",
+      "label": "Mesh 类",
+      "order": 4
+    },
+    {
+      "id": "doping",
+      "label": "掺杂分布类",
+      "order": 5
+    }
+  ],
+  "functions": [
+    {
+      "id": "init.clear",
+      "category": "init",
+      "name": "sde:clear",
+      "label": "清空模型",
+      "description": "清空当前 SDE 模型并恢复大部分初始设置。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sde:clear)",
+      "parameters": [],
+      "requires": [],
+      "example": "(sde:clear)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "init.boolean",
+      "category": "init",
+      "name": "sdegeo:set-default-boolean",
+      "label": "设置重叠处理",
+      "description": "设置区域重叠时的默认处理方式。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdegeo:set-default-boolean \"{{mode}}\")",
+      "parameters": [
+        {
+          "id": "mode",
+          "label": "重叠模式",
+          "description": "AB：合并；ABA：新区域覆盖旧区域；BAB：旧区域优先；ABiA / ABiB：交集单独成区并继承对应材料；XX：保留重叠，划分网格前需自行处理。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "AB",
+            "ABA",
+            "BAB",
+            "ABiA",
+            "ABiB",
+            "XX"
+          ],
+          "default": "ABA",
+          "example": "ABA"
+        }
+      ],
+      "requires": [],
+      "example": "(sdegeo:set-default-boolean \"ABA\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "geometry.rectangle",
+      "category": "geometry",
+      "name": "sdegeo:create-rectangle",
+      "label": "创建 2D 矩形",
+      "description": "用两个二维对角点、材料名和区域名创建矩形；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdegeo:create-rectangle (position {{ax}} {{ay}} 0) (position {{bx}} {{by}} 0) \"{{material}}\" \"{{region}}\")",
+      "parameters": [
+        {
+          "id": "ax",
+          "label": "第一点 X",
+          "description": "矩形第一个角点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.5"
+        },
+        {
+          "id": "ay",
+          "label": "第一点 Y",
+          "description": "矩形第一个角点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.2"
+        },
+        {
+          "id": "bx",
+          "label": "第二点 X",
+          "description": "与第一个角点相对的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.5"
+        },
+        {
+          "id": "by",
+          "label": "第二点 Y",
+          "description": "与第一个角点相对的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1.0"
+        },
+        {
+          "id": "material",
+          "label": "材料名",
+          "description": "区域采用的 SDE 材料名称，例如 Silicon。",
+          "type": "scheme_string",
+          "required": true,
+          "default": "Silicon",
+          "example": "Silicon",
+          "suggestion_source": "materials"
+        },
+        {
+          "id": "region",
+          "label": "区域名",
+          "description": "新区域在模型中的名称，通常应唯一。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "R.Substrate"
+        }
+      ],
+      "requires": [],
+      "example": "(sdegeo:create-rectangle (position -0.5 0.2 0) (position 0.5 1.0 0) \"Silicon\" \"R.Substrate\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "geometry.vertex",
+      "category": "geometry",
+      "name": "sdegeo:insert-vertex",
+      "label": "插入顶点",
+      "description": "在现有二维几何边的指定 X/Y 坐标处增加顶点；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdegeo:insert-vertex (position {{x}} {{y}} 0))",
+      "parameters": [
+        {
+          "id": "x",
+          "label": "X 坐标",
+          "description": "目标边上插入点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.1"
+        },
+        {
+          "id": "y",
+          "label": "Y 坐标",
+          "description": "目标边上插入点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        }
+      ],
+      "requires": [
+        "坐标应落在现有边上"
+      ],
+      "example": "(sdegeo:insert-vertex (position -0.1 0.1 0))",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "contact.edge",
+      "category": "contact",
+      "name": "sdegeo:set-contact",
+      "label": "设置边接触",
+      "description": "用边上的 X/Y 坐标找到目标边，并赋予接触名称；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdegeo:set-contact (find-edge-id (position {{x}} {{y}} 0)) \"{{contact}}\")",
+      "parameters": [
+        {
+          "id": "x",
+          "label": "边上点 X",
+          "description": "用来定位目标边的边上点 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.4"
+        },
+        {
+          "id": "y",
+          "label": "边上点 Y",
+          "description": "用来定位目标边的边上点 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "contact",
+          "label": "接触名",
+          "description": "事先定义好的 Contact set 名称，例如 source。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "source"
+        }
+      ],
+      "requires": [
+        "目标边和 Contact set 需已存在"
+      ],
+      "example": "(sdegeo:set-contact (find-edge-id (position -0.4 0 0)) \"source\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "contact.body_remove",
+      "category": "contact",
+      "name": "sdegeo:set-contact",
+      "label": "区域边界设接触并删除区域",
+      "description": "用区域内部的 X/Y 坐标定位目标区域，设置接触并删除区域；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdegeo:set-contact (find-body-id (position {{x}} {{y}} 0)) \"{{contact}}\" \"remove\")",
+      "parameters": [
+        {
+          "id": "x",
+          "label": "区域内点 X",
+          "description": "目标区域内部一点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "y",
+          "label": "区域内点 Y",
+          "description": "目标区域内部一点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.1"
+        },
+        {
+          "id": "contact",
+          "label": "接触名",
+          "description": "事先定义好的 Contact set 名称，例如 gate。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "gate"
+        }
+      ],
+      "requires": [
+        "会删除所选区域"
+      ],
+      "example": "(sdegeo:set-contact (find-body-id (position 0 -0.1 0)) \"gate\" \"remove\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "mesh.window",
+      "category": "mesh",
+      "name": "sdedr:define-refeval-window",
+      "label": "定义矩形网格窗口",
+      "description": "用两个二维对角点定义矩形 Ref/Eval 网格窗口；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdedr:define-refeval-window \"{{window}}\" \"Rectangle\" (position {{ax}} {{ay}} 0) (position {{bx}} {{by}} 0))",
+      "parameters": [
+        {
+          "id": "window",
+          "label": "窗口名",
+          "description": "网格窗口的名称，供后续细化放置引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefWin.all"
+        },
+        {
+          "id": "ax",
+          "label": "第一点 X",
+          "description": "窗口第一个角点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.5"
+        },
+        {
+          "id": "ay",
+          "label": "第一点 Y",
+          "description": "窗口第一个角点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.2"
+        },
+        {
+          "id": "bx",
+          "label": "第二点 X",
+          "description": "窗口对角点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.5"
+        },
+        {
+          "id": "by",
+          "label": "第二点 Y",
+          "description": "窗口对角点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1.0"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-refeval-window \"RefWin.all\" \"Rectangle\" (position -0.5 0.2 0) (position 0.5 1.0 0))",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_4.html"
+    },
+    {
+      "id": "mesh.size",
+      "category": "mesh",
+      "name": "sdedr:define-refinement-size",
+      "label": "定义 2D 网格尺寸",
+      "description": "设置二维网格的 X/Y 最大与最小步长。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdedr:define-refinement-size \"{{refinement}}\" {{xmax}} {{ymax}} {{xmin}} {{ymin}})",
+      "parameters": [
+        {
+          "id": "refinement",
+          "label": "细化定义名",
+          "description": "本组网格尺寸定义的名称，供放置命令引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDef.all"
+        },
+        {
+          "id": "xmax",
+          "label": "X 最大步长",
+          "description": "X 方向允许的最大网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.25"
+        },
+        {
+          "id": "ymax",
+          "label": "Y 最大步长",
+          "description": "Y 方向允许的最大网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        },
+        {
+          "id": "xmin",
+          "label": "X 最小步长",
+          "description": "X 方向允许的最小网格步长，不应大于 X 最大步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.025"
+        },
+        {
+          "id": "ymin",
+          "label": "Y 最小步长",
+          "description": "Y 方向允许的最小网格步长，不应大于 Y 最大步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.01"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-refinement-size \"RefDef.all\" 0.25 0.1 0.025 0.01)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_4.html"
+    },
+    {
+      "id": "mesh.placement",
+      "category": "mesh",
+      "name": "sdedr:define-refinement-placement",
+      "label": "放置网格细化",
+      "description": "把已有的网格尺寸定义应用到已有窗口。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-refinement-placement \"{{placement}}\" \"{{refinement}}\" \"{{window}}\")",
+      "parameters": [
+        {
+          "id": "placement",
+          "label": "放置名",
+          "description": "此次放置的名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "PlaceRF.all"
+        },
+        {
+          "id": "refinement",
+          "label": "细化定义名",
+          "description": "前面已定义的网格尺寸名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDef.all"
+        },
+        {
+          "id": "window",
+          "label": "窗口名",
+          "description": "前面已定义的 Ref/Eval 窗口名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefWin.all"
+        }
+      ],
+      "requires": [
+        "细化定义和窗口需已定义"
+      ],
+      "example": "(sdedr:define-refinement-placement \"PlaceRF.all\" \"RefDef.all\" \"RefWin.all\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_4.html"
+    },
+    {
+      "id": "mesh.build",
+      "category": "mesh",
+      "name": "sde:build-mesh",
+      "label": "构建网格",
+      "description": "按当前结构和网格设置生成网格。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sde:build-mesh \"{{basename}}\")",
+      "parameters": [
+        {
+          "id": "basename",
+          "label": "输出文件基名",
+          "description": "输出网格文件的基础名称，不包含扩展名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "soifet"
+        }
+      ],
+      "requires": [
+        "模型与网格设置需已存在"
+      ],
+      "example": "(sde:build-mesh \"soifet\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_4.html"
+    },
+    {
+      "id": "init.auto_region_off",
+      "category": "init",
+      "name": "sdegeo:set-auto-region-naming",
+      "label": "设置自动区域命名",
+      "description": "启用或关闭自动区域命名。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdegeo:set-auto-region-naming {{enabled}})",
+      "parameters": [
+        {
+          "id": "enabled",
+          "label": "自动区域命名",
+          "description": "ON 启用；OFF 关闭。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "OFF",
+            "ON"
+          ],
+          "default": "OFF",
+          "example": "OFF"
+        }
+      ],
+      "requires": [],
+      "example": "(sdegeo:set-auto-region-naming OFF)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "init.boolean_bab",
+      "category": "init",
+      "name": "sdegeo:set-default-boolean",
+      "label": "设置旧区域优先重叠",
+      "description": "将默认重叠处理方式设为 BAB。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdegeo:set-default-boolean \"BAB\")",
+      "parameters": [],
+      "requires": [],
+      "example": "(sdegeo:set-default-boolean \"BAB\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "init.save_model",
+      "category": "init",
+      "name": "sde:save-model",
+      "label": "保存 SDE 模型",
+      "description": "用文件基名保存当前结构模型。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sde:save-model \"{{basename}}\")",
+      "parameters": [
+        {
+          "id": "basename",
+          "label": "模型文件基名",
+          "description": "输出文件的基础名称，不写扩展名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "n@node@_geo"
+        }
+      ],
+      "requires": [],
+      "example": "(sde:save-model \"n@node@_geo\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "init.define_parameter",
+      "category": "init",
+      "name": "sde:define-parameter",
+      "label": "定义 SDE 参数",
+      "description": "定义一个数值参数，供后续 SDE 命令引用。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sde:define-parameter \"{{name}}\" {{value}} {{minimum}} {{maximum}})",
+      "parameters": [
+        {
+          "id": "name",
+          "label": "参数名",
+          "description": "SDE 参数名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "fillet-radius"
+        },
+        {
+          "id": "value",
+          "label": "当前值",
+          "description": "参数的初始数值。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.08"
+        },
+        {
+          "id": "minimum",
+          "label": "下限设置",
+          "description": "教程示例中的第三个数值；不限制时示例使用 0。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "maximum",
+          "label": "上限设置",
+          "description": "教程示例中的第四个数值；不限制时示例使用 0。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        }
+      ],
+      "requires": [],
+      "example": "(sde:define-parameter \"fillet-radius\" 0.08 0 0)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "geometry.cuboid",
+      "category": "geometry",
+      "name": "sdegeo:create-cuboid",
+      "label": "创建 3D 长方体",
+      "description": "用两个三维对角点、材料名和区域名创建长方体。",
+      "dimensions": [
+        "3D"
+      ],
+      "template": "(sdegeo:create-cuboid (position {{ax}} {{ay}} {{az}}) (position {{bx}} {{by}} {{bz}}) \"{{material}}\" \"{{region}}\")",
+      "parameters": [
+        {
+          "id": "ax",
+          "label": "第一点 X",
+          "description": "第一点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.25"
+        },
+        {
+          "id": "ay",
+          "label": "第一点 Y",
+          "description": "第一点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.2"
+        },
+        {
+          "id": "az",
+          "label": "第一点 Z",
+          "description": "第一点的 Z 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "bx",
+          "label": "第二点 X",
+          "description": "第二点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.25"
+        },
+        {
+          "id": "by",
+          "label": "第二点 Y",
+          "description": "第二点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.2"
+        },
+        {
+          "id": "bz",
+          "label": "第二点 Z",
+          "description": "第二点的 Z 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-1"
+        },
+        {
+          "id": "material",
+          "label": "材料名",
+          "description": "SDE 材料名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Silicon",
+          "suggestion_source": "materials"
+        },
+        {
+          "id": "region",
+          "label": "区域名",
+          "description": "新区域名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "SubsSilicon"
+        }
+      ],
+      "requires": [],
+      "example": "(sdegeo:create-cuboid (position -0.25 -0.2 0) (position 0.25 0.2 -1) \"Silicon\" \"SubsSilicon\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "geometry.move_vertex_2d",
+      "category": "geometry",
+      "name": "sdegeo:move-vertex",
+      "label": "移动 2D 顶点",
+      "description": "按原位置找到顶点并移动到新位置；两处 Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdegeo:move-vertex (car (find-vertex-id (position {{ox}} {{oy}} 0))) (position {{nx}} {{ny}} 0))",
+      "parameters": [
+        {
+          "id": "ox",
+          "label": "原顶点 X",
+          "description": "原顶点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.1"
+        },
+        {
+          "id": "oy",
+          "label": "原顶点 Y",
+          "description": "原顶点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        },
+        {
+          "id": "nx",
+          "label": "新顶点 X",
+          "description": "新顶点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.12"
+        },
+        {
+          "id": "ny",
+          "label": "新顶点 Y",
+          "description": "新顶点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        }
+      ],
+      "requires": [
+        "原位置必须对应现有顶点"
+      ],
+      "example": "(sdegeo:move-vertex (car (find-vertex-id (position -0.1 0.1 0))) (position -0.12 0.1 0))",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "geometry.fillet_2d",
+      "category": "geometry",
+      "name": "sdegeo:fillet-2d",
+      "label": "二维顶点倒圆角",
+      "description": "将指定二维顶点按给定半径倒圆角；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdegeo:fillet-2d (find-vertex-id (position {{x}} {{y}} 0)) {{radius}})",
+      "parameters": [
+        {
+          "id": "x",
+          "label": "顶点 X",
+          "description": "顶点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.2"
+        },
+        {
+          "id": "y",
+          "label": "顶点 Y",
+          "description": "顶点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.2"
+        },
+        {
+          "id": "radius",
+          "label": "圆角半径",
+          "description": "圆角半径，可填写数值或已定义的参数名。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.08"
+        }
+      ],
+      "requires": [
+        "目标顶点需存在，半径不得超过周围边的允许范围"
+      ],
+      "example": "(sdegeo:fillet-2d (find-vertex-id (position -0.2 -0.2 0)) 0.08)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "geometry.polygon_triangle",
+      "category": "geometry",
+      "name": "sdegeo:create-polygon",
+      "label": "创建 2D 三角形",
+      "description": "使用三个二维顶点创建三角形；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdegeo:create-polygon (list (position {{ax}} {{ay}} 0) (position {{bx}} {{by}} 0) (position {{cx}} {{cy}} 0)) \"{{material}}\" \"{{region}}\")",
+      "parameters": [
+        {
+          "id": "ax",
+          "label": "顶点 A X",
+          "description": "顶点 A的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "ay",
+          "label": "顶点 A Y",
+          "description": "顶点 A的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "bx",
+          "label": "顶点 B X",
+          "description": "顶点 B的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "by",
+          "label": "顶点 B Y",
+          "description": "顶点 B的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "cx",
+          "label": "顶点 C X",
+          "description": "顶点 C的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "cy",
+          "label": "顶点 C Y",
+          "description": "顶点 C的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "material",
+          "label": "材料名",
+          "description": "SDE 材料名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Silicon",
+          "suggestion_source": "materials"
+        },
+        {
+          "id": "region",
+          "label": "区域名",
+          "description": "新区域名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "R.Triangle"
+        }
+      ],
+      "requires": [],
+      "example": "(sdegeo:create-polygon (list (position 0 0 0) (position 1 0 0) (position 0 1 0)) \"Silicon\" \"R.Triangle\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "geometry.polygon_quad",
+      "category": "geometry",
+      "name": "sdegeo:create-polygon",
+      "label": "创建 2D 四边形",
+      "description": "按顺序使用四个二维顶点创建多边形；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdegeo:create-polygon (list (position {{ax}} {{ay}} 0) (position {{bx}} {{by}} 0) (position {{cx}} {{cy}} 0) (position {{dx}} {{dy}} 0)) \"{{material}}\" \"{{region}}\")",
+      "parameters": [
+        {
+          "id": "ax",
+          "label": "顶点 A X",
+          "description": "顶点 A的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "ay",
+          "label": "顶点 A Y",
+          "description": "顶点 A的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "bx",
+          "label": "顶点 B X",
+          "description": "顶点 B的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "by",
+          "label": "顶点 B Y",
+          "description": "顶点 B的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "cx",
+          "label": "顶点 C X",
+          "description": "顶点 C的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "cy",
+          "label": "顶点 C Y",
+          "description": "顶点 C的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "dx",
+          "label": "顶点 D X",
+          "description": "顶点 D的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "dy",
+          "label": "顶点 D Y",
+          "description": "顶点 D的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "material",
+          "label": "材料名",
+          "description": "SDE 材料名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Silicon",
+          "suggestion_source": "materials"
+        },
+        {
+          "id": "region",
+          "label": "区域名",
+          "description": "新区域名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "R.Polygon"
+        }
+      ],
+      "requires": [],
+      "example": "(sdegeo:create-polygon (list (position 0 0 0) (position 1 0 0) (position 1 1 0) (position 0 1 0)) \"Silicon\" \"R.Polygon\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_2.html"
+    },
+    {
+      "id": "contact.face",
+      "category": "contact",
+      "name": "sdegeo:set-contact",
+      "label": "设置 3D 面接触",
+      "description": "按面上的三维坐标找到目标面并设置接触。",
+      "dimensions": [
+        "3D"
+      ],
+      "template": "(sdegeo:set-contact (find-face-id (position {{x}} {{y}} {{z}})) \"{{contact}}\")",
+      "parameters": [
+        {
+          "id": "x",
+          "label": "面上点 X",
+          "description": "面上点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "y",
+          "label": "面上点 Y",
+          "description": "面上点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "z",
+          "label": "面上点 Z",
+          "description": "面上点的 Z 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-1"
+        },
+        {
+          "id": "contact",
+          "label": "接触名",
+          "description": "已定义的 Contact set 名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "substrate"
+        }
+      ],
+      "requires": [
+        "目标面和 Contact set 需已存在"
+      ],
+      "example": "(sdegeo:set-contact (find-face-id (position 0 0 -1)) \"substrate\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "contact.body_remove_3d",
+      "category": "contact",
+      "name": "sdegeo:set-contact",
+      "label": "3D 区域接触并删除",
+      "description": "将三维区域指定为接触并删除该区域。",
+      "dimensions": [
+        "3D"
+      ],
+      "template": "(sdegeo:set-contact (find-body-id (position {{x}} {{y}} {{z}})) \"{{contact}}\" \"remove\")",
+      "parameters": [
+        {
+          "id": "x",
+          "label": "区域内点 X",
+          "description": "区域内点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.2"
+        },
+        {
+          "id": "y",
+          "label": "区域内点 Y",
+          "description": "区域内点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "z",
+          "label": "区域内点 Z",
+          "description": "区域内点的 Z 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.02"
+        },
+        {
+          "id": "contact",
+          "label": "接触名",
+          "description": "已定义的 Contact set 名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "source"
+        }
+      ],
+      "requires": [
+        "会删除定位到的区域"
+      ],
+      "example": "(sdegeo:set-contact (find-body-id (position -0.2 0 0.02)) \"source\" \"remove\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "mesh.line_window",
+      "category": "mesh",
+      "name": "sdedr:define-refeval-window",
+      "label": "定义 2D 线窗口",
+      "description": "用两个二维端点定义 Line 型 Ref/Eval 窗口；Z 坐标固定为 0。",
+      "dimensions": [
+        "2D"
+      ],
+      "template": "(sdedr:define-refeval-window \"{{window}}\" \"Line\" (position {{ax}} {{ay}} 0) (position {{bx}} {{by}} 0))",
+      "parameters": [
+        {
+          "id": "window",
+          "label": "窗口名",
+          "description": "供掺杂或网格定义引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "BaseLine.Source"
+        },
+        {
+          "id": "ax",
+          "label": "起点 X",
+          "description": "起点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.8"
+        },
+        {
+          "id": "ay",
+          "label": "起点 Y",
+          "description": "起点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "bx",
+          "label": "终点 X",
+          "description": "终点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.2"
+        },
+        {
+          "id": "by",
+          "label": "终点 Y",
+          "description": "终点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-refeval-window \"BaseLine.Source\" \"Line\" (position -0.8 0 0) (position -0.2 0 0))",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "mesh.cuboid_window",
+      "category": "mesh",
+      "name": "sdedr:define-refeval-window",
+      "label": "定义 3D 长方体窗口",
+      "description": "用两个三维对角点定义 Cuboid 型 Ref/Eval 窗口。",
+      "dimensions": [
+        "3D"
+      ],
+      "template": "(sdedr:define-refeval-window \"{{window}}\" \"Cuboid\" (position {{ax}} {{ay}} {{az}}) (position {{bx}} {{by}} {{bz}}))",
+      "parameters": [
+        {
+          "id": "window",
+          "label": "窗口名",
+          "description": "供掺杂或网格定义引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefWin.Global"
+        },
+        {
+          "id": "ax",
+          "label": "第一点 X",
+          "description": "第一点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.25"
+        },
+        {
+          "id": "ay",
+          "label": "第一点 Y",
+          "description": "第一点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-0.2"
+        },
+        {
+          "id": "az",
+          "label": "第一点 Z",
+          "description": "第一点的 Z 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-1"
+        },
+        {
+          "id": "bx",
+          "label": "第二点 X",
+          "description": "第二点的 X 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.25"
+        },
+        {
+          "id": "by",
+          "label": "第二点 Y",
+          "description": "第二点的 Y 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.2"
+        },
+        {
+          "id": "bz",
+          "label": "第二点 Z",
+          "description": "第二点的 Z 坐标。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-refeval-window \"RefWin.Global\" \"Cuboid\" (position -0.25 -0.2 -1) (position 0.25 0.2 0.1))",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "mesh.size_3d",
+      "category": "mesh",
+      "name": "sdedr:define-refinement-size",
+      "label": "定义 3D 网格尺寸",
+      "description": "按 X/Y/Z 最大步长、X/Y/Z 最小步长的顺序定义网格尺寸。",
+      "dimensions": [
+        "3D"
+      ],
+      "template": "(sdedr:define-refinement-size \"{{refinement}}\" {{xmax}} {{ymax}} {{zmax}} {{xmin}} {{ymin}} {{zmin}})",
+      "parameters": [
+        {
+          "id": "refinement",
+          "label": "细化定义名",
+          "description": "供放置指令引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDef.Global"
+        },
+        {
+          "id": "xmax",
+          "label": "X 最大步长",
+          "description": "对应方向的网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        },
+        {
+          "id": "ymax",
+          "label": "Y 最大步长",
+          "description": "对应方向的网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        },
+        {
+          "id": "zmax",
+          "label": "Z 最大步长",
+          "description": "对应方向的网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        },
+        {
+          "id": "xmin",
+          "label": "X 最小步长",
+          "description": "对应方向的网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.05"
+        },
+        {
+          "id": "ymin",
+          "label": "Y 最小步长",
+          "description": "对应方向的网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.05"
+        },
+        {
+          "id": "zmin",
+          "label": "Z 最小步长",
+          "description": "对应方向的网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.05"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-refinement-size \"RefDef.Global\" 0.1 0.1 0.1 0.05 0.05 0.05)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "mesh.refinement_region",
+      "category": "mesh",
+      "name": "sdedr:define-refinement-region",
+      "label": "按区域放置网格细化",
+      "description": "将已有的网格细化定义应用到指定区域。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-refinement-region \"{{placement}}\" \"{{refinement}}\" \"{{region}}\")",
+      "parameters": [
+        {
+          "id": "placement",
+          "label": "放置名",
+          "description": "本次放置名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "PlaceRF.Epi"
+        },
+        {
+          "id": "refinement",
+          "label": "细化定义名",
+          "description": "已定义的网格细化名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDef.Epi"
+        },
+        {
+          "id": "region",
+          "label": "区域名",
+          "description": "模型中已有的区域名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "R.Siliconepi"
+        }
+      ],
+      "requires": [
+        "细化定义和区域需已存在"
+      ],
+      "example": "(sdedr:define-refinement-region \"PlaceRF.Epi\" \"RefDef.Epi\" \"R.Siliconepi\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_4.html"
+    },
+    {
+      "id": "mesh.doping_gradient",
+      "category": "mesh",
+      "name": "sdedr:define-refinement-function",
+      "label": "按掺杂变化细化网格",
+      "description": "对 DopingConcentration 使用 MaxTransDiff 细化准则。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-refinement-function \"{{refinement}}\" \"DopingConcentration\" \"MaxTransDiff\" {{threshold}})",
+      "parameters": [
+        {
+          "id": "refinement",
+          "label": "细化定义名",
+          "description": "已有的细化定义名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDef.all"
+        },
+        {
+          "id": "threshold",
+          "label": "变化阈值",
+          "description": "掺杂变化的网格细化阈值。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        }
+      ],
+      "requires": [
+        "细化定义需已存在"
+      ],
+      "example": "(sdedr:define-refinement-function \"RefDef.all\" \"DopingConcentration\" \"MaxTransDiff\" 1)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_4.html"
+    },
+    {
+      "id": "mesh.interface_material",
+      "category": "mesh",
+      "name": "sdedr:define-refinement-function",
+      "label": "按材料界面细化网格",
+      "description": "在两个材料之间以 MaxLenInt 准则细化；可选择在界面单侧或双侧细化。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-refinement-function \"{{refinement}}\" \"MaxLenInt\" \"{{material_a}}\" \"{{material_b}}\" {{length}} {{factor}}{{side_clause}})",
+      "parameters": [
+        {
+          "id": "refinement",
+          "label": "细化定义名",
+          "description": "已有的细化定义名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDef.all"
+        },
+        {
+          "id": "material_a",
+          "label": "材料 A",
+          "description": "界面一侧的材料名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Silicon",
+          "suggestion_source": "materials"
+        },
+        {
+          "id": "material_b",
+          "label": "材料 B",
+          "description": "界面另一侧的材料名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Oxide",
+          "suggestion_source": "materials"
+        },
+        {
+          "id": "length",
+          "label": "界面目标长度",
+          "description": "界面上的目标网格长度。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.001"
+        },
+        {
+          "id": "factor",
+          "label": "长度增长系数",
+          "description": "离开界面时网格长度的增长系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1.5"
+        },
+        {
+          "id": "side_clause",
+          "label": "界面细化范围",
+          "description": "单侧仅在第一种材料或区域侧细化；双侧同时细化。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "单侧",
+            "双侧"
+          ],
+          "default": "双侧",
+          "example": "双侧",
+          "code_values": {
+            "单侧": "",
+            "双侧": " \"DoubleSide\""
+          }
+        }
+      ],
+      "requires": [
+        "细化定义需已存在"
+      ],
+      "example": "(sdedr:define-refinement-function \"RefDef.all\" \"MaxLenInt\" \"Silicon\" \"Oxide\" 0.001 1.5 \"DoubleSide\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_4.html"
+    },
+    {
+      "id": "mesh.interface_region",
+      "category": "mesh",
+      "name": "sdedr:define-refinement-function",
+      "label": "按区域界面细化网格",
+      "description": "在两个区域之间以 MaxLenInt 准则细化；可选择在界面单侧或双侧细化。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-refinement-function \"{{refinement}}\" \"MaxLenInt\" \"{{region_a}}\" \"{{region_b}}\" {{length}} {{factor}}{{side_clause}} \"UseRegionNames\")",
+      "parameters": [
+        {
+          "id": "refinement",
+          "label": "细化定义名",
+          "description": "已有的细化定义名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDef.Epi"
+        },
+        {
+          "id": "region_a",
+          "label": "区域 A",
+          "description": "界面一侧的区域名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "R.Siliconepi"
+        },
+        {
+          "id": "region_b",
+          "label": "区域 B",
+          "description": "界面另一侧的区域名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "R.Gateox"
+        },
+        {
+          "id": "length",
+          "label": "界面目标长度",
+          "description": "界面上的目标网格长度。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.0002"
+        },
+        {
+          "id": "factor",
+          "label": "长度增长系数",
+          "description": "离开界面时网格长度的增长系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1.5"
+        },
+        {
+          "id": "side_clause",
+          "label": "界面细化范围",
+          "description": "单侧仅在第一种材料或区域侧细化；双侧同时细化。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "单侧",
+            "双侧"
+          ],
+          "default": "双侧",
+          "example": "双侧",
+          "code_values": {
+            "单侧": "",
+            "双侧": " \"DoubleSide\""
+          }
+        }
+      ],
+      "requires": [
+        "细化定义和两个区域需已存在"
+      ],
+      "example": "(sdedr:define-refinement-function \"RefDef.Epi\" \"MaxLenInt\" \"R.Siliconepi\" \"R.Gateox\" 0.0002 1.5 \"DoubleSide\" \"UseRegionNames\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_4.html"
+    },
+    {
+      "id": "mesh.multibox_size",
+      "category": "mesh",
+      "name": "sdedr:define-multibox-size",
+      "label": "定义 3D 多级网格尺寸",
+      "description": "定义三维多级网格的最大步长、最小步长和三个方向的增长系数。",
+      "dimensions": [
+        "3D"
+      ],
+      "template": "(sdedr:define-multibox-size \"{{refinement}}\" {{xmax}} {{ymax}} {{zmax}} {{xmin}} {{ymin}} {{zmin}} {{xratio}} {{yratio}} {{zratio}})",
+      "parameters": [
+        {
+          "id": "refinement",
+          "label": "多级细化名",
+          "description": "供多级网格放置引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDefMB.Channel"
+        },
+        {
+          "id": "xmax",
+          "label": "X 最大步长",
+          "description": "对应方向的最大网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        },
+        {
+          "id": "ymax",
+          "label": "Y 最大步长",
+          "description": "对应方向的最大网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.1"
+        },
+        {
+          "id": "zmax",
+          "label": "Z 最大步长",
+          "description": "对应方向的最大网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.01"
+        },
+        {
+          "id": "xmin",
+          "label": "X 最小步长",
+          "description": "对应方向的最小网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.05"
+        },
+        {
+          "id": "ymin",
+          "label": "Y 最小步长",
+          "description": "对应方向的最小网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.05"
+        },
+        {
+          "id": "zmin",
+          "label": "Z 最小步长",
+          "description": "对应方向的最小网格步长。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.001"
+        },
+        {
+          "id": "xratio",
+          "label": "X 增长系数",
+          "description": "对应方向的网格增长系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "yratio",
+          "label": "Y 增长系数",
+          "description": "对应方向的网格增长系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "zratio",
+          "label": "Z 增长系数",
+          "description": "对应方向的网格增长系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "-1.5"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-multibox-size \"RefDefMB.Channel\" 0.1 0.1 0.01 0.05 0.05 0.001 1 1 -1.5)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "mesh.multibox_placement",
+      "category": "mesh",
+      "name": "sdedr:define-multibox-placement",
+      "label": "放置 3D 多级网格",
+      "description": "将多级网格定义应用到已有的窗口。",
+      "dimensions": [
+        "3D"
+      ],
+      "template": "(sdedr:define-multibox-placement \"{{placement}}\" \"{{refinement}}\" \"{{window}}\")",
+      "parameters": [
+        {
+          "id": "placement",
+          "label": "放置名",
+          "description": "本次放置名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "PlaceMB.Channel"
+        },
+        {
+          "id": "refinement",
+          "label": "多级细化名",
+          "description": "已定义的多级细化名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefDefMB.Channel"
+        },
+        {
+          "id": "window",
+          "label": "窗口名",
+          "description": "已定义的三维窗口名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefWin.Channel"
+        }
+      ],
+      "requires": [
+        "多级细化和窗口需已存在"
+      ],
+      "example": "(sdedr:define-multibox-placement \"PlaceMB.Channel\" \"RefDefMB.Channel\" \"RefWin.Channel\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "mesh.build_3d_named",
+      "category": "mesh",
+      "name": "sde:build-mesh",
+      "label": "构建 3D 网格并指定名称",
+      "description": "使用教程中的双字符串形式生成三维网格。",
+      "dimensions": [
+        "3D"
+      ],
+      "template": "(sde:build-mesh \"\" \"{{basename}}\")",
+      "parameters": [
+        {
+          "id": "basename",
+          "label": "输出文件基名",
+          "description": "输出网格文件的基础名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "n1_MOSFET3D"
+        }
+      ],
+      "requires": [
+        "模型与网格设置需已存在"
+      ],
+      "example": "(sde:build-mesh \"\" \"n1_MOSFET3D\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_6.html"
+    },
+    {
+      "id": "doping.constant",
+      "category": "doping",
+      "name": "sdedr:define-constant-profile",
+      "label": "定义恒定掺杂分布",
+      "description": "定义指定掺杂物种与浓度的恒定掺杂分布。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-constant-profile \"{{profile}}\" \"{{species}}\" {{concentration}})",
+      "parameters": [
+        {
+          "id": "profile",
+          "label": "分布定义名",
+          "description": "供材料或区域放置引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Const.Silicon"
+        },
+        {
+          "id": "species",
+          "label": "掺杂物种",
+          "description": "例如 BoronActiveConcentration 或 ArsenicActiveConcentration。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "BoronActiveConcentration",
+          "suggestion_source": "species"
+        },
+        {
+          "id": "concentration",
+          "label": "浓度",
+          "description": "恒定掺杂浓度，单位通常为 cm^-3。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1e15"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-constant-profile \"Const.Silicon\" \"BoronActiveConcentration\" 1e15)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.constant_material",
+      "category": "doping",
+      "name": "sdedr:define-constant-profile-material",
+      "label": "按材料放置恒定掺杂",
+      "description": "将已定义的恒定掺杂分布施加到指定材料。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-constant-profile-material \"{{placement}}\" \"{{profile}}\" \"{{material}}\"{{replace_clause}})",
+      "parameters": [
+        {
+          "id": "placement",
+          "label": "放置名",
+          "description": "本次放置的名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "PlaceCD.Silicon"
+        },
+        {
+          "id": "profile",
+          "label": "分布定义名",
+          "description": "已定义的恒定掺杂分布名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Const.Silicon"
+        },
+        {
+          "id": "material",
+          "label": "材料名",
+          "description": "模型中已有的材料名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Silicon",
+          "suggestion_source": "materials"
+        },
+        {
+          "id": "replace_clause",
+          "label": "已有掺杂处理",
+          "description": "NoReplace：保留已有掺杂；Replace：替换；LocalReplace：仅局部替换。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "NoReplace",
+            "Replace",
+            "LocalReplace"
+          ],
+          "default": "NoReplace",
+          "example": "NoReplace",
+          "code_values": {
+            "NoReplace": "",
+            "Replace": " \"Replace\"",
+            "LocalReplace": " \"LocalReplace\""
+          }
+        }
+      ],
+      "requires": [
+        "恒定掺杂定义和材料需已存在"
+      ],
+      "example": "(sdedr:define-constant-profile-material \"PlaceCD.Silicon\" \"Const.Silicon\" \"Silicon\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.constant_region",
+      "category": "doping",
+      "name": "sdedr:define-constant-profile-region",
+      "label": "按区域放置恒定掺杂",
+      "description": "将已定义的恒定掺杂分布施加到指定区域。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-constant-profile-region \"{{placement}}\" \"{{profile}}\" \"{{region}}\"{{replace_clause}})",
+      "parameters": [
+        {
+          "id": "placement",
+          "label": "放置名",
+          "description": "本次放置的名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "PlaceCD.Epi"
+        },
+        {
+          "id": "profile",
+          "label": "分布定义名",
+          "description": "已定义的恒定掺杂分布名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Const.Epi"
+        },
+        {
+          "id": "region",
+          "label": "区域名",
+          "description": "模型中已有的区域名。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "R.Siliconepi"
+        },
+        {
+          "id": "replace_clause",
+          "label": "已有掺杂处理",
+          "description": "NoReplace：保留已有掺杂；Replace：替换；LocalReplace：仅局部替换。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "NoReplace",
+            "Replace",
+            "LocalReplace"
+          ],
+          "default": "NoReplace",
+          "example": "NoReplace",
+          "code_values": {
+            "NoReplace": "",
+            "Replace": " \"Replace\"",
+            "LocalReplace": " \"LocalReplace\""
+          }
+        }
+      ],
+      "requires": [
+        "恒定掺杂定义和区域需已存在"
+      ],
+      "example": "(sdedr:define-constant-profile-region \"PlaceCD.Epi\" \"Const.Epi\" \"R.Siliconepi\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.gaussian",
+      "category": "doping",
+      "name": "sdedr:define-gaussian-profile",
+      "label": "定义高斯掺杂分布",
+      "description": "按峰值位置、峰值浓度、深度处浓度、深度和横向系数定义高斯分布。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-gaussian-profile \"{{profile}}\" \"{{species}}\" \"PeakPos\" {{peak_pos}} \"{{amplitude_kind}}\" {{peak_val}} \"ValueAtDepth\" {{value_depth}} \"Depth\" {{depth}} \"{{lateral_kind}}\" \"Factor\" {{factor}})",
+      "parameters": [
+        {
+          "id": "profile",
+          "label": "分布定义名",
+          "description": "供分析分布放置引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Gauss.SourceDrain"
+        },
+        {
+          "id": "species",
+          "label": "掺杂物种",
+          "description": "例如 ArsenicActiveConcentration。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "ArsenicActiveConcentration",
+          "suggestion_source": "species"
+        },
+        {
+          "id": "peak_pos",
+          "label": "峰值位置",
+          "description": "相对基线的峰值位置。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "amplitude_kind",
+          "label": "幅值类型",
+          "description": "PeakVal：峰值浓度；Dose：总剂量。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "PeakVal",
+            "Dose"
+          ],
+          "default": "PeakVal",
+          "example": "PeakVal"
+        },
+        {
+          "id": "peak_val",
+          "label": "峰值浓度或剂量",
+          "description": "按幅值类型填写峰值浓度或总剂量。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "5e19"
+        },
+        {
+          "id": "value_depth",
+          "label": "深度处浓度",
+          "description": "指定深度处的掺杂浓度。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1e17"
+        },
+        {
+          "id": "depth",
+          "label": "指定深度",
+          "description": "对应“深度处浓度”的深度。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.12"
+        },
+        {
+          "id": "factor",
+          "label": "横向系数",
+          "description": "横向分布系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.8"
+        },
+        {
+          "id": "lateral_kind",
+          "label": "横向分布",
+          "description": "Gauss：高斯；Erf：误差函数。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "Gauss",
+            "Erf"
+          ],
+          "default": "Gauss",
+          "example": "Gauss"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-gaussian-profile \"Gauss.SourceDrain\" \"ArsenicActiveConcentration\" \"PeakPos\" 0 \"PeakVal\" 5e19 \"ValueAtDepth\" 1e17 \"Depth\" 0.12 \"Gauss\" \"Factor\" 0.8)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.gaussian_width",
+      "category": "doping",
+      "name": "sdedr:define-gaussian-profile",
+      "label": "定义高斯掺杂分布（长度或标准差）",
+      "description": "按峰值位置、峰值浓度或剂量，以及扩散长度或标准差定义高斯分布。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-gaussian-profile \"{{profile}}\" \"{{species}}\" \"PeakPos\" {{peak_pos}} \"{{amplitude_kind}}\" {{peak_val}} \"{{width_kind}}\" {{width}} \"{{lateral_kind}}\" \"Factor\" {{factor}})",
+      "parameters": [
+        {
+          "id": "profile",
+          "label": "分布定义名",
+          "description": "供分析分布放置引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Gauss.SourceDrain"
+        },
+        {
+          "id": "species",
+          "label": "掺杂物种",
+          "description": "例如 ArsenicActiveConcentration。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "ArsenicActiveConcentration",
+          "suggestion_source": "species"
+        },
+        {
+          "id": "peak_pos",
+          "label": "峰值位置",
+          "description": "相对基线的峰值位置。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0"
+        },
+        {
+          "id": "amplitude_kind",
+          "label": "幅值类型",
+          "description": "PeakVal：峰值浓度；Dose：总剂量。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "PeakVal",
+            "Dose"
+          ],
+          "default": "PeakVal",
+          "example": "PeakVal"
+        },
+        {
+          "id": "peak_val",
+          "label": "峰值浓度或剂量",
+          "description": "按幅值类型填写峰值浓度或总剂量。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "5e19"
+        },
+        {
+          "id": "width_kind",
+          "label": "宽度类型",
+          "description": "Length：扩散长度；StdDev：标准差。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "Length",
+            "StdDev"
+          ],
+          "default": "Length",
+          "example": "Length"
+        },
+        {
+          "id": "width",
+          "label": "扩散长度或标准差",
+          "description": "按所选宽度类型填写长度，单位与模型坐标一致。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.12"
+        },
+        {
+          "id": "factor",
+          "label": "横向系数",
+          "description": "横向分布系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.8"
+        },
+        {
+          "id": "lateral_kind",
+          "label": "横向分布",
+          "description": "Gauss：高斯；Erf：误差函数。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "Gauss",
+            "Erf"
+          ],
+          "default": "Gauss",
+          "example": "Gauss"
+        }
+      ],
+      "requires": [],
+      "example": "(sdedr:define-gaussian-profile \"Gauss.SourceDrain\" \"ArsenicActiveConcentration\" \"PeakPos\" 0 \"PeakVal\" 5e19 \"Length\" 0.12 \"Gauss\" \"Factor\" 0.8)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.analytical_placement",
+      "category": "doping",
+      "name": "sdedr:define-analytical-profile-placement",
+      "label": "沿窗口放置分析掺杂",
+      "description": "将已有分析掺杂分布放到 Ref/Eval 窗口。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-analytical-profile-placement \"{{placement}}\" \"{{profile}}\" \"{{window}}\" \"{{direction}}\" \"{{replace}}\" \"{{evaluation}}\")",
+      "parameters": [
+        {
+          "id": "placement",
+          "label": "放置名",
+          "description": "本次放置名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "PlaceAP.Source"
+        },
+        {
+          "id": "profile",
+          "label": "分布定义名",
+          "description": "已定义的高斯或其他分析分布名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "Gauss.SourceDrain"
+        },
+        {
+          "id": "window",
+          "label": "窗口名",
+          "description": "已定义的 Ref/Eval 窗口名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "BaseLine.Source"
+        },
+        {
+          "id": "direction",
+          "label": "放置方向",
+          "description": "相对窗口的方向。",
+          "type": "enum",
+          "required": true,
+          "example": "Positive",
+          "default": "Positive",
+          "choices": [
+            "Positive",
+            "Negative",
+            "Both"
+          ]
+        },
+        {
+          "id": "replace",
+          "label": "覆盖策略",
+          "description": "是否替换已有掺杂。",
+          "type": "enum",
+          "required": true,
+          "example": "NoReplace",
+          "default": "NoReplace",
+          "choices": [
+            "NoReplace",
+            "Replace",
+            "LocalReplace"
+          ]
+        },
+        {
+          "id": "evaluation",
+          "label": "求值模式",
+          "description": "Eval：在目标内求值；NoEval：不在目标内求值。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "Eval",
+            "NoEval"
+          ],
+          "default": "Eval",
+          "example": "Eval"
+        }
+      ],
+      "requires": [
+        "分析掺杂分布和窗口需已存在"
+      ],
+      "example": "(sdedr:define-analytical-profile-placement \"PlaceAP.Source\" \"Gauss.SourceDrain\" \"BaseLine.Source\" \"Positive\" \"NoReplace\" \"Eval\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.external_1d",
+      "category": "doping",
+      "name": "sdedr:define-1d-external-profile",
+      "label": "定义外部一维掺杂",
+      "description": "从一维 PLX 文件导入掺杂分布，并设定缩放和横向分布系数。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-1d-external-profile \"{{profile}}\" \"{{filename}}\" \"Scale\" {{scale}} \"{{lateral_kind}}\" \"Factor\" {{factor}})",
+      "parameters": [
+        {
+          "id": "profile",
+          "label": "分布定义名",
+          "description": "外部一维分布名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "AnalyticalProfileDefinition_1"
+        },
+        {
+          "id": "filename",
+          "label": "PLX 文件",
+          "description": "一维掺杂数据文件路径。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "1d_As.plx"
+        },
+        {
+          "id": "scale",
+          "label": "缩放系数",
+          "description": "导入数据的缩放系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "1"
+        },
+        {
+          "id": "factor",
+          "label": "横向系数",
+          "description": "横向高斯分布系数。",
+          "type": "scheme_expr",
+          "required": true,
+          "example": "0.2"
+        },
+        {
+          "id": "lateral_kind",
+          "label": "横向分布",
+          "description": "Gauss：高斯；Erf：误差函数。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "Gauss",
+            "Erf"
+          ],
+          "default": "Gauss",
+          "example": "Gauss"
+        }
+      ],
+      "requires": [
+        "PLX 文件需存在"
+      ],
+      "example": "(sdedr:define-1d-external-profile \"AnalyticalProfileDefinition_1\" \"1d_As.plx\" \"Scale\" 1 \"Gauss\" \"Factor\" 0.2)",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.submesh",
+      "category": "doping",
+      "name": "sdedr:define-submesh",
+      "label": "定义外部网格分布",
+      "description": "从 TDR 网格文件导入外部分布。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-submesh \"{{profile}}\" \"{{filename}}\")",
+      "parameters": [
+        {
+          "id": "profile",
+          "label": "外部分布名",
+          "description": "供外部分布放置引用。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "ExternalProfileDefinition_1"
+        },
+        {
+          "id": "filename",
+          "label": "TDR 文件",
+          "description": "已有的 TDR 网格文件路径。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "external_msh.tdr"
+        }
+      ],
+      "requires": [
+        "TDR 文件需存在"
+      ],
+      "example": "(sdedr:define-submesh \"ExternalProfileDefinition_1\" \"external_msh.tdr\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.submesh_window",
+      "category": "doping",
+      "name": "sdedr:define-submesh-placement",
+      "label": "按窗口放置外部分布",
+      "description": "将外部分布放入已有的 Ref/Eval 窗口。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-submesh-placement \"{{placement}}\" \"{{profile}}\" \"{{window}}\" \"{{replace}}\")",
+      "parameters": [
+        {
+          "id": "placement",
+          "label": "放置名",
+          "description": "本次放置名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "ExternalProfilePlacement_1"
+        },
+        {
+          "id": "profile",
+          "label": "外部分布名",
+          "description": "已导入的外部分布名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "ExternalProfileDefinition_1"
+        },
+        {
+          "id": "window",
+          "label": "窗口名",
+          "description": "已有的 Ref/Eval 窗口名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "RefEvalWin_1"
+        },
+        {
+          "id": "replace",
+          "label": "已有掺杂处理",
+          "description": "NoReplace：保留；Replace：替换；LocalReplace：局部替换。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "NoReplace",
+            "Replace",
+            "LocalReplace"
+          ],
+          "default": "NoReplace",
+          "example": "NoReplace"
+        }
+      ],
+      "requires": [
+        "外部分布和窗口需已存在"
+      ],
+      "example": "(sdedr:define-submesh-placement \"ExternalProfilePlacement_1\" \"ExternalProfileDefinition_1\" \"RefEvalWin_1\" \"NoReplace\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    },
+    {
+      "id": "doping.submesh_region",
+      "category": "doping",
+      "name": "sdedr:define-submesh-placement",
+      "label": "按区域放置外部分布",
+      "description": "将外部分布放入已有区域。",
+      "dimensions": [
+        "2D",
+        "3D"
+      ],
+      "template": "(sdedr:define-submesh-placement \"{{placement}}\" \"{{profile}}\" \"{{region}}\" \"PlacementType\" \"Region\" \"{{replace}}\")",
+      "parameters": [
+        {
+          "id": "placement",
+          "label": "放置名",
+          "description": "本次放置名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "ExternalProfilePlacement_1"
+        },
+        {
+          "id": "profile",
+          "label": "外部分布名",
+          "description": "已导入的外部分布名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "ExternalProfileDefinition_1"
+        },
+        {
+          "id": "region",
+          "label": "区域名",
+          "description": "模型中已有的区域名称。",
+          "type": "scheme_string",
+          "required": true,
+          "example": "bulk"
+        },
+        {
+          "id": "replace",
+          "label": "已有掺杂处理",
+          "description": "NoReplace：保留；Replace：替换；LocalReplace：局部替换。",
+          "type": "enum",
+          "required": true,
+          "choices": [
+            "NoReplace",
+            "Replace",
+            "LocalReplace"
+          ],
+          "default": "NoReplace",
+          "example": "NoReplace"
+        }
+      ],
+      "requires": [
+        "外部分布和区域需已存在"
+      ],
+      "example": "(sdedr:define-submesh-placement \"ExternalProfilePlacement_1\" \"ExternalProfileDefinition_1\" \"bulk\" \"PlacementType\" \"Region\" \"NoReplace\")",
+      "source": "https://ghzphy.github.io/Sentaurus_Training/sde/sde_3.html"
+    }
+  ],
+  "suggestion_lists": {
+    "materials": [
+      "Silicon",
+      "Oxide",
+      "Nitride",
+      "PolySi",
+      "Metal",
+      "Resist",
+      "GaAs",
+      "AlGaAs",
+      "AlAs",
+      "InAlAs",
+      "InAs",
+      "InAsP",
+      "InP"
+    ],
+    "species": [
+      "BoronActiveConcentration",
+      "PhosphorusActiveConcentration",
+      "ArsenicActiveConcentration"
+    ]
+  }
+}

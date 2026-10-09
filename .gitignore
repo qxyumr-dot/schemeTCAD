@@ -1,0 +1,17 @@
+# 依赖目录
+node_modules/
+
+# 编译和测试产物
+out/
+dist/
+.vscode-test/
+*.vsix
+*.log
+
+# 本地环境配置
+.env
+.env.*
+!.env.example
+
+# 旧 Git 信息备份
+.git-backup/

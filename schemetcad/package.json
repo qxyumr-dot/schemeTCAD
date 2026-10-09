@@ -1,0 +1,90 @@
+{
+  "name": "schemetcad",
+  "displayName": "schemeTCAD",
+  "description": "通过可更新的 TXT 函数库生成 Sentaurus SDE Scheme 语句",
+  "publisher": "local",
+  "version": "0.7.4",
+  "engines": {
+    "vscode": "^1.137.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "schemetcad.openAssistant",
+        "title": "Scheme TCAD: 打开语句辅助"
+      },
+      {
+        "command": "schemetcad.focusAssistant",
+        "title": "Scheme TCAD: 切换代码与辅助界面"
+      },
+      {
+        "command": "schemetcad.showOverview",
+        "title": "Scheme TCAD: 显示文件概览"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "schemetcad.openAssistant",
+        "key": "alt+q",
+        "when": "editorTextFocus && !editorReadonly"
+      },
+      {
+        "command": "schemetcad.focusAssistant",
+        "key": "shift shift",
+        "when": "editorTextFocus && !editorReadonly"
+      },
+      {
+        "command": "schemetcad.focusAssistant",
+        "key": "shift shift",
+        "when": "activeWebviewPanelId == schemetcad.assistant"
+      },
+      {
+        "command": "schemetcad.focusAssistant",
+        "key": "shift shift",
+        "when": "activeWebviewPanelId == schemetcad.overview"
+      },
+      {
+        "command": "schemetcad.focusAssistant",
+        "key": "ctrl+shift+q",
+        "when": "editorTextFocus && !editorReadonly"
+      },
+      {
+        "command": "schemetcad.focusAssistant",
+        "key": "ctrl+shift+q",
+        "when": "activeWebviewPanelId == schemetcad.assistant"
+      },
+      {
+        "command": "schemetcad.focusAssistant",
+        "key": "ctrl+shift+q",
+        "when": "activeWebviewPanelId == schemetcad.overview"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.137.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "24.x",
+    "typescript-eslint": "^8.61.1",
+    "eslint": "^10.5.0",
+    "typescript": "^6.0.3",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0"
+  },
+  "overrides": {
+    "diff": "^8.0.4",
+    "serialize-javascript": "^7.0.6"
+  }
+}
