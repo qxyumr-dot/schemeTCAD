@@ -2,6 +2,56 @@
 
 在 VS Code 中选择 Sentaurus Structure Editor（SDE）Scheme 指令，填写参数并插入到原光标位置。
 
+## 当前版本
+
+- **当前源码版本：0.7.4**，以本目录 `package.json` 中的 `version` 为准。
+- **VS Code：1.137.0 或更高的 1.x 版本**，对应 `engines.vscode: ^1.137.0`。
+- **本地构建环境：Node.js 24.x 和随附的 npm**。
+- 0.7.4 修复辅助页双击 Shift 触发两次切换的问题。完整记录见 [CHANGELOG.md](https://github.com/qxyumr-dot/schemeTCAD/blob/main/schemetcad/CHANGELOG.md)。
+
+## 安装到日常使用的 VS Code
+
+安装需要 `.vsix` 文件。GitHub 仓库保存源码，VSIX 不纳入 Git；下载源码后，请在**包含 `package.json` 的插件目录**生成当前版本的安装包。旧版安装包不会因为源码更新而自动升级。
+
+### 从源码生成 VSIX
+
+获取源码后进入内层 `schemetcad` 文件夹，执行：
+
+```powershell
+npm.cmd ci
+npm.cmd run compile
+npm.cmd run lint
+```
+
+首次使用时安装打包工具：
+
+```powershell
+npm.cmd install --global @vscode/vsce
+```
+
+生成当前版本安装包：
+
+```powershell
+vsce.cmd package --no-dependencies --allow-missing-repository --skip-license --out schemetcad-0.7.4.vsix
+```
+
+安装包生成在当前目录。`--no-dependencies` 对应本项目没有运行时 npm 依赖；另外两个选项允许目前尚未配置 repository 字段和许可证文件的项目本地打包。Windows PowerShell 中使用 `.cmd` 命令，可避免 `npm.ps1` 等脚本被执行策略拦截。
+
+### 安装并确认版本
+
+1. 在 VS Code 按 **Ctrl+Shift+X** 打开扩展面板。
+2. 点击面板右上角 **…**，选择 **Install from VSIX… / 从 VSIX 安装…**。也可在命令面板运行 **Extensions: Install from VSIX…**。
+3. 选择 `schemetcad-0.7.4.vsix`，按提示重新加载窗口。
+4. 在扩展面板查看 **schemeTCAD**，确认版本为 **0.7.4** 且已启用。
+
+如果 VS Code 命令行工具已加入 PATH，也可以在安装包目录执行：
+
+```powershell
+code.cmd --install-extension .\schemetcad-0.7.4.vsix
+```
+
+以后更新源码版本时，重新编译、打包并安装对应版本的 VSIX。有关安装操作，参考 [VS Code 官方说明](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_install-from-a-vsix)。
+
 ## 使用
 
 1. 打开待编辑的 SDE Scheme 文件，把光标放在目标位置。
@@ -41,6 +91,23 @@
 
 ## 开发与安装
 
-在项目目录运行 `npm run compile` 后按 F5，可在插件开发宿主中测试。打包时运行 `vsce package --no-dependencies --allow-missing-repository --skip-license`，然后在日常 VS Code 中运行 **Extensions: Install from VSIX...** 安装生成的文件。
+开发时，在 VS Code 中打开本目录 `schemetcad`，先运行 `npm.cmd ci`，再按 **F5** 启动扩展开发宿主。当前调试配置会自动启动 TypeScript 监视编译。开发宿主是独立的调试窗口；要在日常 VS Code 中使用，请按本文的 VSIX 步骤安装。
+
+独立编译与检查命令：
+
+```powershell
+npm.cmd run compile
+npm.cmd run lint
+```
+
+Git 仓库根目录在本目录的上一层：Git 提交在外层执行，npm 和 vsce 在本目录执行。`node_modules`、`out`、`dist` 和 `.vsix` 已被忽略，但 `package-lock.json` 应保留在 Git 中。
+
+## 常见问题
+
+- **PowerShell 禁止运行 npm.ps1：**改用 `npm.cmd`，无需为了构建插件修改执行策略。
+- **找不到 package.json：**进入内层 `schemetcad` 文件夹再运行构建命令。
+- **VS Code 版本不兼容：**检查当前 VS Code 是否满足 `^1.137.0`。
+- **插件仍为旧版本：**重新打包并安装当前版本，重新加载窗口后检查扩展详情页。
+- **双击 Shift 被输入法占用：**使用 Alt+Q 打开界面，或使用 Ctrl+Shift+Q 切换焦点。
 
 此项目生成 SDE Scheme 代码；不会直接执行 Sentaurus，也不会检查模型中是否真的存在所引用的区域、接触或网格窗口。
